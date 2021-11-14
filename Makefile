@@ -11,3 +11,6 @@ clean:
 
 heroku: $(DOCKER_CMD)
 	heroku container:push web
+
+migrate:
+	goose -dir db/migrations postgres ${DB_URL} up
