@@ -10,5 +10,5 @@ func main() {
 		fmt.Fprint(w, "Hello, world!")
 	})
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", nil)
 }
