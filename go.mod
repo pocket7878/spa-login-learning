@@ -1,5 +1,6 @@
 module github.com/pocket7878/spa_login_learning_backend
 
+// +heroku goVersion go1.16.4
 go 1.16
 
 require (
@@ -7,5 +8,4 @@ require (
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.4
 	github.com/golang-jwt/jwt v3.2.1+incompatible
-	github.com/joho/godotenv v1.4.0
 )
