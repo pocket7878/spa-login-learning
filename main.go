@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
 	"os"
+
+	"github.com/pocket7878/spa_login_learning_backend/infrastructure/presentation"
 )
 
 func main() {
@@ -13,9 +13,7 @@ func main() {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello, world!")
-	})
 
-	http.ListenAndServe(":"+port, nil)
+	r := presentation.NewRouter()
+	r.Run(":" + port)
 }
