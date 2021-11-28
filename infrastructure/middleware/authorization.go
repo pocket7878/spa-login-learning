@@ -31,11 +31,13 @@ type CustomClaims struct {
 func (c CustomClaims) Validate(_ context.Context) error {
 	expectedAudience := os.Getenv("AUTH0_AUDIENCE")
 	if c.Audience != expectedAudience {
+		log.Fatalf("token claims validation failed: unexpected audience %q", c.Audience)
 		return fmt.Errorf("token claims validation failed: unexpected audience %q", c.Audience)
 	}
 
 	expectedIssuer := "https://" + os.Getenv("AUTH0_DOMAIN") + "/"
 	if c.Issuer != expectedIssuer {
+		log.Fatalf("token claims validation failed: unexpected issuer %q", c.Issuer)
 		return fmt.Errorf("token claims validation failed: unexpected issuer %q", c.Issuer)
 	}
 
