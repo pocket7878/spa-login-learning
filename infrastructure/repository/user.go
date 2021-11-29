@@ -52,22 +52,16 @@ func (u *UserRepositoryImpl) GetByProviderWithUID(ctx context.Context, provider,
 }
 
 func (u *UserRepositoryImpl) Store(ctx context.Context, user *domain.User) error {
-	query := `INSERT INTO users (provider, uid) VALUES ($1, $2)`
+	query := `INSERT INTO users (provider, uid) VALUES ($1, $2) RETURNING id`
 	stmt, err := u.db.PrepareContext(ctx, query)
 	if err != nil {
 		return err
 	}
 
-	res, err := stmt.ExecContext(ctx, user.Provider, user.UID)
+	err = stmt.QueryRowContext(ctx, user.Provider, user.UID).Scan(&user.ID)
 	if err != nil {
 		return err
 	}
-
-	lastID, err := res.LastInsertId()
-	if err != nil {
-		return err
-	}
-	user.ID = lastID
 
 	return nil
 }

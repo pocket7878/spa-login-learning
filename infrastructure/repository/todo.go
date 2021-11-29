@@ -53,27 +53,22 @@ func (r *TodoRepositoryImpl) GetTodos(ctx context.Context, userID int64) ([]*dom
 }
 
 func (r *TodoRepositoryImpl) Create(ctx context.Context, userID int64, description string) (*domain.Todo, error) {
-	query := `INSERT INTO todos (user_id, description) VALUES ($1, $2)`
+	query := `INSERT INTO todos (user_id, description) VALUES ($1, $2) RETURNING id`
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := stmt.ExecContext(ctx, userID, description)
-	if err != nil {
-		return nil, err
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
-
-	return &domain.Todo{
-		ID:          id,
+	var result = &domain.Todo{
 		UserID:      userID,
 		Description: description,
-	}, nil
+	}
+	err = stmt.QueryRowContext(ctx, userID, description).Scan(&result.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 func (r *TodoRepositoryImpl) Delete(ctx context.Context, todoID int64) error {
