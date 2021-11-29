@@ -13,7 +13,7 @@ heroku: $(DOCKER_CMD)
 	heroku container:push web
 
 db_migrate:
-	goose -dir db/migrations postgres ${DB_URL} up
+	goose -dir db/migrations -allow-missing postgres ${DB_URL} up
 
 db_reset:
 	goose -dir db/migrations postgres ${DB_URL} reset
