@@ -41,10 +41,12 @@ func TodoPost(u domain.TodoUsecase) gin.HandlerFunc {
 		err := c.BindJSON(&jsonInput)
 		if err != nil {
 			c.AbortWithError(500, err)
+			return
 		}
 		todo, err := u.Create(c, 1, jsonInput.Data.Description)
 		if err != nil {
 			c.AbortWithError(500, err)
+			return
 		}
 
 		response := make(map[string]string)
