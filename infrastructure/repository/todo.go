@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"os"
 
+	"github.com/lib/pq"
 	"github.com/pocket7878/spa_login_learning_backend/domain"
 )
 
@@ -13,7 +14,10 @@ type TodoRepositoryImpl struct {
 }
 
 func NewTodoRepository() (*TodoRepositoryImpl, error) {
-	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	url := os.Getenv("DATABASE_URL")
+	connection, _ := pq.ParseURL(url)
+	connection += " sslmode=require"
+	db, err := sql.Open("postgres", connection)
 
 	if err != nil {
 		return nil, err
