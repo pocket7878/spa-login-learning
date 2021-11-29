@@ -48,7 +48,7 @@ func (u *UserRepositoryImpl) GetByID(ctx context.Context, id int64) (*domain.Use
 }
 
 func (u *UserRepositoryImpl) Store(ctx context.Context, user *domain.User) error {
-	query := `INSERT users SET email=?`
+	query := `INSERT users SET email=$1`
 	stmt, err := u.db.PrepareContext(ctx, query)
 	if err != nil {
 		return err

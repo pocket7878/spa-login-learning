@@ -27,7 +27,7 @@ func NewTodoRepository() (*TodoRepositoryImpl, error) {
 }
 
 func (r *TodoRepositoryImpl) GetTodos(ctx context.Context, userID int64) ([]*domain.Todo, error) {
-	query := `SELECT id, user_id, description FROM todos WHERE user_id = ?`
+	query := `SELECT id, user_id, description FROM todos WHERE user_id = $1`
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (r *TodoRepositoryImpl) GetTodos(ctx context.Context, userID int64) ([]*dom
 }
 
 func (r *TodoRepositoryImpl) Create(ctx context.Context, userID int64, description string) (*domain.Todo, error) {
-	query := `INSERT INTO todos (user_id, description) VALUES (?, ?)`
+	query := `INSERT INTO todos (user_id, description) VALUES ($1, $2)`
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func (r *TodoRepositoryImpl) Create(ctx context.Context, userID int64, descripti
 }
 
 func (r *TodoRepositoryImpl) Delete(ctx context.Context, todoID int64) error {
-	query := `DELETE FROM todos WHERE id = ?`
+	query := `DELETE FROM todos WHERE id = $1`
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
 		return err
