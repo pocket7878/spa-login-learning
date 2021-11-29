@@ -47,6 +47,7 @@ func (r *TodoRepositoryImpl) GetTodos(ctx context.Context, userID int64) ([]*dom
 		if err != nil {
 			return nil, err
 		}
+		result = append(result, todo)
 	}
 
 	return result, nil
