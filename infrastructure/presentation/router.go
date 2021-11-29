@@ -41,13 +41,13 @@ func NewRouter(u domain.UserUsecase, t domain.TodoUsecase) *gin.Engine {
 	router.GET(
 		"/todos",
 		middleware.EnsureValidToken(),
-		TodosGet(t),
+		TodosGet(u, t),
 	)
 
 	router.POST(
 		"/todos",
 		middleware.EnsureValidToken(),
-		TodoPost(t),
+		TodoPost(u, t),
 	)
 
 	return router
