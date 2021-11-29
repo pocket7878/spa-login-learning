@@ -3,16 +3,17 @@ package domain
 import "context"
 
 type User struct {
-	ID    int64
-	Email string
+	ID       int64
+	Provider string
+	UID      string
 }
 
 type UserUsecase interface {
-	GetByID(ctx context.Context, id int64) (*User, error)
+	GetByProviderWithUID(ctx context.Context, provider string, uid string) (*User, error)
 	Store(ctx context.Context, user *User) error
 }
 
 type UserRepository interface {
-	GetByID(ctx context.Context, id int64) (*User, error)
+	GetByProviderWithUID(ctx context.Context, provider string, uid string) (*User, error)
 	Store(ctx context.Context, user *User) error
 }

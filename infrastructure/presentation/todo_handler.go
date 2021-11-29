@@ -1,16 +1,24 @@
 package presentation
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
+	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	"github.com/auth0/go-jwt-middleware/validate/josev2"
 	"github.com/gin-gonic/gin"
 	"github.com/pocket7878/spa_login_learning_backend/domain"
 )
 
-func TodosGet(u domain.TodoUsecase) gin.HandlerFunc {
+func TodosGet(u domain.UserUsecase, t domain.TodoUsecase) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		todos, err := u.GetTodos(c, 1)
+		//Retrieve & Ensure User
+		provider, uid := extractProviderAndUID(c)
+		user, err := ensureUser(c.Request.Context(), u, provider, uid)
+
+		todos, err := t.GetTodos(c, user.ID)
 		if err != nil {
 			c.AbortWithError(500, err)
 		}
@@ -35,15 +43,54 @@ type PostTodoInput struct {
 	Data PostTodoData `json:"todo"`
 }
 
-func TodoPost(u domain.TodoUsecase) gin.HandlerFunc {
+func extractProviderAndUID(ctx *gin.Context) (string, string) {
+	claims := ctx.Request.Context().Value(jwtmiddleware.ContextKey{}).(*josev2.UserContext)
+	subject := claims.RegisteredClaims.Subject
+	subjectParts := strings.Split(subject, "|")
+	subjectProvider := subjectParts[0]
+	subjectUID := subjectParts[1]
+
+	return subjectProvider, subjectUID
+}
+
+func ensureUser(ctx context.Context, u domain.UserUsecase, provider, uid string) (*domain.User, error) {
+	var result *domain.User
+
+	existsUser, err := u.GetByProviderWithUID(ctx, provider, uid)
+	if err != nil {
+		// User not exists
+		result = &domain.User{
+			Provider: provider,
+			UID:      uid,
+		}
+		err = u.Store(ctx, result)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		result = existsUser
+	}
+
+	return result, nil
+}
+
+func TodoPost(u domain.UserUsecase, t domain.TodoUsecase) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		//Retrieve & Ensure User
+		provider, uid := extractProviderAndUID(c)
+		user, err := ensureUser(c.Request.Context(), u, provider, uid)
+
+		if err != nil {
+			c.AbortWithError(500, err)
+		}
+
 		var jsonInput PostTodoInput
-		err := c.BindJSON(&jsonInput)
+		err = c.BindJSON(&jsonInput)
 		if err != nil {
 			c.AbortWithError(500, err)
 			return
 		}
-		todo, err := u.Create(c, 1, jsonInput.Data.Description)
+		todo, err := t.Create(c, user.ID, jsonInput.Data.Description)
 		if err != nil {
 			c.AbortWithError(500, err)
 			return

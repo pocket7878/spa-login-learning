@@ -16,8 +16,8 @@ func NewUserUsecase(repo domain.UserRepository) *UserUsecaseImpl {
 	}
 }
 
-func (u *UserUsecaseImpl) GetByID(ctx context.Context, id int64) (*domain.User, error) {
-	return u.repo.GetByID(ctx, id)
+func (u *UserUsecaseImpl) GetByProviderWithUID(ctx context.Context, provider string, uid string) (*domain.User, error) {
+	return u.repo.GetByProviderWithUID(ctx, provider, uid)
 }
 
 func (u *UserUsecaseImpl) Store(ctx context.Context, user *domain.User) error {
