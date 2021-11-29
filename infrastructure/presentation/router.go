@@ -13,7 +13,6 @@ import (
 func NewRouter(u domain.UserUsecase, t domain.TodoUsecase) *gin.Engine {
 	router := gin.Default()
 
-	router.Use(middleware.RequireJsonRequestBodyOnly())
 	router.Use(cors.New(
 		cors.Config{
 			AllowOrigins: []string{
@@ -24,6 +23,7 @@ func NewRouter(u domain.UserUsecase, t domain.TodoUsecase) *gin.Engine {
 			AllowHeaders:     []string{"Authorization", "Content-Type"},
 		},
 	))
+	router.Use(middleware.RequireJsonRequestBodyOnly())
 
 	// Public endpoints
 	router.Any("/", func(ctx *gin.Context) {
