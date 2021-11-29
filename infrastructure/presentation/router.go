@@ -21,6 +21,7 @@ func NewRouter(u domain.UserUsecase, t domain.TodoUsecase) *gin.Engine {
 			},
 			AllowCredentials: true,
 			AllowHeaders:     []string{"Authorization", "Content-Type"},
+			AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		},
 	))
 	router.Use(middleware.RequireJsonRequestBodyOnly())
