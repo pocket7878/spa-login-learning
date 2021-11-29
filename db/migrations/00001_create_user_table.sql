@@ -2,7 +2,8 @@
 -- +goose StatementBegin
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
-	email varchar(255) NOT NULL
+	provider varchar(255) NOT NULL,
+	uid varchar(255) NOT NULL
 )
 -- +goose StatementEnd
 
