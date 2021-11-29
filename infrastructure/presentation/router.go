@@ -15,7 +15,10 @@ func NewRouter(u domain.UserUsecase, t domain.TodoUsecase) *gin.Engine {
 
 	router.Use(cors.New(
 		cors.Config{
-			AllowOrigins:     []string{"http://localhost:3000"}, //TODO allow from Vercel hosted frontend
+			AllowOrigins: []string{
+				"http://localhost:3000",
+				"https://spa-login-learning-frontend.vercel.app",
+			},
 			AllowCredentials: true,
 			AllowHeaders:     []string{"Authorization", "Content-Type"},
 		},
