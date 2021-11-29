@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
@@ -112,5 +113,40 @@ func TodoPost(u domain.UserUsecase, t domain.TodoUsecase) gin.HandlerFunc {
 		response["description"] = todo.Description
 
 		c.JSON(http.StatusOK, response)
+	}
+}
+
+func TodoDelete(u domain.UserUsecase, t domain.TodoUsecase) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		//Retrieve & Ensure User
+		provider, uid := extractProviderAndUID(c)
+		user, err := ensureUser(c.Request.Context(), u, provider, uid)
+
+		if err != nil {
+			c.AbortWithError(500, err)
+			return
+		}
+
+		todoID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.AbortWithError(500, err)
+			return
+		}
+		todo, err := t.GetTodo(c, todoID)
+		if err != nil {
+			c.AbortWithError(500, err)
+			return
+		}
+		if todo == nil {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+		if todo.UserID != user.ID {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+		t.Delete(c, todoID)
+
+		c.Status(http.StatusNoContent)
 	}
 }

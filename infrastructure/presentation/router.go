@@ -13,6 +13,7 @@ import (
 func NewRouter(u domain.UserUsecase, t domain.TodoUsecase) *gin.Engine {
 	router := gin.Default()
 
+	router.Use(middleware.RequireJsonRequestBodyOnly())
 	router.Use(cors.New(
 		cors.Config{
 			AllowOrigins: []string{
@@ -51,6 +52,12 @@ func NewRouter(u domain.UserUsecase, t domain.TodoUsecase) *gin.Engine {
 		"/todos",
 		middleware.EnsureValidToken(),
 		TodoPost(u, t),
+	)
+
+	router.DELETE(
+		"/todos/:id",
+		middleware.EnsureValidToken(),
+		TodoDelete(u, t),
 	)
 
 	return router

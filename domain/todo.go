@@ -10,12 +10,14 @@ type Todo struct {
 
 type TodoUsecase interface {
 	GetTodos(ctx context.Context, userID int64) ([]*Todo, error)
+	GetTodo(ctx context.Context, id int64) (*Todo, error)
 	Create(ctx context.Context, userID int64, description string) (*Todo, error)
 	Delete(ctx context.Context, todoID int64) error
 }
 
 type TodoRepository interface {
 	GetTodos(ctx context.Context, userID int64) ([]*Todo, error)
+	GetTodo(ctx context.Context, id int64) (*Todo, error)
 	Create(ctx context.Context, userID int64, description string) (*Todo, error)
 	Delete(ctx context.Context, todoID int64) error
 }

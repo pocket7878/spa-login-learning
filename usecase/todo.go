@@ -25,6 +25,15 @@ func (u *TodoUsecaseImpl) GetTodos(ctx context.Context, userID int64) ([]*domain
 	return todos, nil
 }
 
+func (u *TodoUsecaseImpl) GetTodo(ctx context.Context, id int64) (*domain.Todo, error) {
+	todo, err := u.repo.GetTodo(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return todo, nil
+}
+
 func (u *TodoUsecaseImpl) Create(ctx context.Context, userID int64, description string) (*domain.Todo, error) {
 	todo, err := u.repo.Create(ctx, userID, description)
 	if err != nil {
