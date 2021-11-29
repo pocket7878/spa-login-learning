@@ -27,6 +27,7 @@ func ensureUser(ctx context.Context, u domain.UserUsecase, provider, uid string)
 
 	existsUser, err := u.GetByProviderWithUID(ctx, provider, uid)
 	if err != nil {
+		fmt.Printf("Can't find existing user: %e", err)
 		// User not exists
 		result = &domain.User{
 			Provider: provider,
