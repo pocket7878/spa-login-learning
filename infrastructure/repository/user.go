@@ -52,7 +52,7 @@ func (u *UserRepositoryImpl) GetByProviderWithUID(ctx context.Context, provider,
 }
 
 func (u *UserRepositoryImpl) Store(ctx context.Context, user *domain.User) error {
-	query := `INSERT users SET provider=$1,uid=$2`
+	query := `INSERT INTO users (provider, uid) VALUES ($1, $2)`
 	stmt, err := u.db.PrepareContext(ctx, query)
 	if err != nil {
 		return err
