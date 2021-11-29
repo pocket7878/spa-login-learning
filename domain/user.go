@@ -8,11 +8,11 @@ type User struct {
 }
 
 type UserUsecase interface {
-	GetByID(ctx context.Context, id int64) (User, error)
+	GetByID(ctx context.Context, id int64) (*User, error)
 	Store(ctx context.Context, user *User) error
 }
 
 type UserRepository interface {
-	GetByID(ctx context.Context, id int64) (User, error)
+	GetByID(ctx context.Context, id int64) (*User, error)
 	Store(ctx context.Context, user *User) error
 }

@@ -5,11 +5,12 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/pocket7878/spa_login_learning_backend/domain"
 	"github.com/pocket7878/spa_login_learning_backend/infrastructure/middleware"
 )
 
 // New sets up our routes and returns a *gin.Engine.
-func NewRouter() *gin.Engine {
+func NewRouter(u domain.UserUsecase, t domain.TodoUsecase) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(
@@ -40,17 +41,13 @@ func NewRouter() *gin.Engine {
 	router.GET(
 		"/todos",
 		middleware.EnsureValidToken(),
-		func(ctx *gin.Context) {
-			response := []map[string]string{
-				{
-					"description": "This is todo 1",
-				},
-				{
-					"description": "This is todo 2",
-				},
-			}
-			ctx.JSON(http.StatusOK, response)
-		},
+		TodosGet(t),
+	)
+
+	router.POST(
+		"/todos",
+		middleware.EnsureValidToken(),
+		TodoPost(t),
 	)
 
 	return router

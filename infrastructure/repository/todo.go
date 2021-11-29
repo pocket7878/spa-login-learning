@@ -3,12 +3,23 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"os"
 
 	"github.com/pocket7878/spa_login_learning_backend/domain"
 )
 
 type TodoRepositoryImpl struct {
 	db *sql.DB
+}
+
+func NewTodoRepository() (*TodoRepositoryImpl, error) {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &TodoRepositoryImpl{db}, nil
 }
 
 func (r *TodoRepositoryImpl) GetTodos(ctx context.Context, userID int64) ([]*domain.Todo, error) {

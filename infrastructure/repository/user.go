@@ -3,12 +3,23 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"os"
 
 	"github.com/pocket7878/spa_login_learning_backend/domain"
 )
 
 type UserRepositoryImpl struct {
 	db *sql.DB
+}
+
+func NewUserRepository() (*UserRepositoryImpl, error) {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &UserRepositoryImpl{db}, nil
 }
 
 func (u *UserRepositoryImpl) GetByID(ctx context.Context, id int64) (*domain.User, error) {

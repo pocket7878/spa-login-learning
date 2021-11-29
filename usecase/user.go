@@ -10,7 +10,13 @@ type UserUsecaseImpl struct {
 	repo domain.UserRepository
 }
 
-func (u *UserUsecaseImpl) GetByID(ctx context.Context, id int64) (domain.User, error) {
+func NewUserUsecase(repo domain.UserRepository) *UserUsecaseImpl {
+	return &UserUsecaseImpl{
+		repo: repo,
+	}
+}
+
+func (u *UserUsecaseImpl) GetByID(ctx context.Context, id int64) (*domain.User, error) {
 	return u.repo.GetByID(ctx, id)
 }
 
