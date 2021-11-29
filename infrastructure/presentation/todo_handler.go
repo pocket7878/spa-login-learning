@@ -34,7 +34,7 @@ func ensureUser(ctx context.Context, u domain.UserUsecase, provider, uid string)
 		}
 		err = u.Store(ctx, result)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to store new user with (%s,%s): %e", provider, uid, err)
 		}
 	} else {
 		result = existsUser
@@ -47,9 +47,9 @@ func TodosGet(u domain.UserUsecase, t domain.TodoUsecase) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//Retrieve & Ensure User
 		provider, uid := extractProviderAndUID(c)
-		user, err := ensureUser(c.Request.Context(), u, provider, uid)
+		user, err := ensureUser(c, u, provider, uid)
 		if err != nil {
-			c.AbortWithError(500, err)
+			c.AbortWithError(500, fmt.Errorf("failed to ensure user: %w", err))
 			return
 		}
 
