@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE users (
-	id BIGINT NOT NULL,
+	id SERIAL PRIMARY KEY,
 	email varchar(255) NOT NULL
 )
 -- +goose StatementEnd
