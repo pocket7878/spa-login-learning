@@ -42,13 +42,16 @@ func (u *UserRepositoryImpl) GetByProviderWithUID(ctx context.Context, provider,
 		rows.Close()
 	}()
 
-	result := new(domain.User)
-	err = rows.Scan(&result.ID, &result.Provider, &result.UID)
-	if err != nil {
-		return nil, err
+	if rows.Next() == true {
+		result := new(domain.User)
+		err = rows.Scan(&result.ID, &result.Provider, &result.UID)
+		if err != nil {
+			return nil, err
+		}
+		return result, nil
+	} else {
+		return nil, nil
 	}
-
-	return result, nil
 }
 
 func (u *UserRepositoryImpl) Store(ctx context.Context, user *domain.User) error {
